@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Board extends BaseObject {
 
-    List<CardCollection> mCardCollections = new ArrayList<>();
+    List<Deck> mDecks = new ArrayList<>();
 
     public Board(String id, String name) {
         super(id, name);
@@ -42,15 +42,15 @@ public class Board extends BaseObject {
         super.writeToParcel(dest, flags);
     }
 
-    void addCardCollection(CardCollection collection) {
-        mCardCollections.add(collection);
+    public void addDeck(Deck collection) {
+        mDecks.add(collection);
     }
 
-    void getCardCollection(String name) {
+    public void getDeck(String name) {
         //
     }
 
-    List<CardCollection> getCardCollections() {
-        return mCardCollections;
+    public List<Deck> getDecks() {
+        return mDecks;
     }
 }

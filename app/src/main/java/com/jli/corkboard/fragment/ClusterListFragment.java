@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jli.corkboard.ClusterListAdapter;
+import com.jli.corkboard.Constant;
 import com.jli.corkboard.CorkBoardActivity;
 import com.jli.corkboard.R;
 import com.jli.corkboard.model.Board;
@@ -53,7 +54,7 @@ public class ClusterListFragment extends Fragment {
             public void onClick(ClusterListAdapter.ClusterListItemViewHolder viewHolder, Board board) {
                 Intent boardActivity = new Intent(getActivity(), CorkBoardActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(CorkBoardActivity.BOARD_ARG, board);
+                bundle.putParcelable(Constant.BOARD_ARG, board);
                 boardActivity.putExtras(bundle);
                 startActivity(boardActivity);
             }
