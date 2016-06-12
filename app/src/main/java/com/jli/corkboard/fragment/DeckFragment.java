@@ -39,11 +39,11 @@ public class DeckFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_deck, container, false);
         bindUi(rootView);
-        Bundle bundle = getArguments();
+        Bundle bundle = savedInstanceState;
         if(bundle == null) {
-            bundle = savedInstanceState;
+            bundle = getArguments();
         }
-        mDeck = bundle.getParcelable("deck");
+        mDeck = bundle.getParcelable(Constant.DECK_ARG);
 
         bindUi(rootView);
         return rootView;
@@ -88,6 +88,7 @@ public class DeckFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putAll(getArguments());
         outState.putParcelable(Constant.DECK_ARG, mDeck);
     }
 }

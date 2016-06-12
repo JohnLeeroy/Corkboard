@@ -75,7 +75,7 @@ public class CorkBoardActivity extends AppCompatActivity {
                     Bundle bundle = intent.getExtras();
                     Deck deck = bundle.getParcelable(Constant.DECK_ARG);
                     mBoard.addDeck(deck);
-                    mAdapter.addDeck(deck);
+                    //mAdapter.addDeck(deck);
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -99,6 +99,7 @@ public class CorkBoardActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putAll(getIntent().getExtras());
         outState.putParcelable(Constant.BOARD_ARG, mBoard);
     }
 
