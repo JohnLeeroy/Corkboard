@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jli.corkboard.ClusterListAdapter;
+import com.jli.corkboard.view.adapter.ClusterListAdapter;
 import com.jli.corkboard.Constant;
-import com.jli.corkboard.CorkBoardActivity;
+import com.jli.corkboard.activity.CorkBoardActivity;
 import com.jli.corkboard.R;
 import com.jli.corkboard.model.Board;
 import com.jli.corkboard.model.Cluster;

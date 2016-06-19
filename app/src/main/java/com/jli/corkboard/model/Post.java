@@ -5,25 +5,25 @@ import android.os.Parcel;
 /**
  * Created by john on 6/5/16.
  */
-public class Card extends BaseObject {
+public class Post extends BaseObject {
 
-    public Card(String id, String name) {
+    public Post(String id, String name) {
         super(id, name);
     }
 
-    protected Card(Parcel in) {
+    protected Post(Parcel in) {
         super(in);
     }
 
-    public static final Creator<Card> CREATOR = new Creator<Card>() {
+    public static final Creator<Post> CREATOR = new Creator<Post>() {
         @Override
-        public Card createFromParcel(Parcel in) {
-            return new Card(in);
+        public Post createFromParcel(Parcel in) {
+            return new Post(in);
         }
 
         @Override
-        public Card[] newArray(int size) {
-            return new Card[size];
+        public Post[] newArray(int size) {
+            return new Post[size];
         }
     };
 

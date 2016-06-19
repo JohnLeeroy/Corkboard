@@ -1,4 +1,4 @@
-package com.jli.corkboard;
+package com.jli.corkboard.view.adapter;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jli.corkboard.R;
 import com.jli.corkboard.model.Board;
 import com.jli.corkboard.model.Cluster;
 

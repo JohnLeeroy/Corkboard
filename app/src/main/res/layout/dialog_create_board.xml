@@ -13,7 +13,7 @@
         android:inputType="textCapSentences"
         />
 
-    <com.jli.corkboard.InstantAutoCompleteTextView
+    <com.jli.corkboard.view.InstantAutoCompleteTextView
         android:id="@+id/board_group_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

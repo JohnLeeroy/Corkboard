@@ -16,6 +16,9 @@ public class User extends BaseObject {
         super(id, name);
     }
 
+    public User(String id, User user) {
+        super(id, user.getName());
+    }
     public Cluster addCluster(Cluster cluster) {
         return mClusterMap.put(cluster.getName(), cluster);
     }
@@ -26,6 +29,5 @@ public class User extends BaseObject {
 
     public List<Cluster> getClusters() {
         return new ArrayList<Cluster>(mClusterMap.values());
-
     }
 }

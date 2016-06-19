@@ -1,4 +1,4 @@
-package com.jli.corkboard;
+package com.jli.corkboard.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,8 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.jli.corkboard.Constant;
+import com.jli.corkboard.EventConstant;
+import com.jli.corkboard.R;
 import com.jli.corkboard.model.Board;
 import com.jli.corkboard.model.Deck;
+import com.jli.corkboard.view.adapter.DeckViewPagerAdapter;
 
 public class CorkBoardActivity extends AppCompatActivity {
 
@@ -23,6 +28,7 @@ public class CorkBoardActivity extends AppCompatActivity {
     DeckViewPagerAdapter mAdapter;
     BroadcastReceiver mLocalBroadcastReceiver;
     Board mBoard;
+    FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,8 @@ public class CorkBoardActivity extends AppCompatActivity {
             }
         });
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         bindUi();
         bindLocalBroadcast();
     }
@@ -63,6 +71,8 @@ public class CorkBoardActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.view_pager_deck);
         mAdapter = new DeckViewPagerAdapter(getSupportFragmentManager(), mBoard.getDecks());
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setPageMargin(-100);
+        mViewPager.setOffscreenPageLimit(3);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -75,8 +85,8 @@ public class CorkBoardActivity extends AppCompatActivity {
                     Bundle bundle = intent.getExtras();
                     Deck deck = bundle.getParcelable(Constant.DECK_ARG);
                     mBoard.addDeck(deck);
-                    //mAdapter.addDeck(deck);
                     mAdapter.notifyDataSetChanged();
+                    mFirebaseAnalytics.logEvent(EventConstant.DECK_CREATED_EVENT, null);
                 }
             }
         };
@@ -86,14 +96,13 @@ public class CorkBoardActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocalBroadcastReceiver, filter);
     }
 
-
-    //Many Card Collection
+    //Many Post Collection
     // Many Cards
     // Add Cards
-    // Add Card Collection
+    // Add Post Collection
     //
     // Horizontal Linear Layout
-    //   Card Collection Card
+    //   Post Collection Post
     //     Many Cards
 
     @Override

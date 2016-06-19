@@ -48,7 +48,6 @@ public class AddDeckCardView extends CardView {
         mLabel = (TextView) findViewById(R.id.add_collection_field);
         mCollectionName = (EditText) findViewById(R.id.edit_collection_name);
 
-
         mLabel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

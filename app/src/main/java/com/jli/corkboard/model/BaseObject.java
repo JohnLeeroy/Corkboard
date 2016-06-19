@@ -3,12 +3,21 @@ package com.jli.corkboard.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by john on 6/5/16.
  */
 public class BaseObject implements Parcelable {
+
+    @SerializedName("id")
     protected String mId;
+
+    @SerializedName("name")
     protected String mName;
+
+    public BaseObject(String id) { mId = id; }
 
     public BaseObject(String id, String name) {
         mId = id;
@@ -50,4 +59,5 @@ public class BaseObject implements Parcelable {
         dest.writeString(mId);
         dest.writeString(mName);
     }
+
 }

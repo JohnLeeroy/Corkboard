@@ -1,6 +1,8 @@
 package com.jli.corkboard.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -8,18 +10,22 @@ import java.util.Set;
  */
 public class Deck extends BaseObject {
 
-    Set<Card> mCards = new HashSet<>();
+    List<Post> mPosts = new ArrayList<>();
 
     public Deck(String id, String name) {
         super(id, name);
     }
-    public Deck(String id, String name, Set<Card> cards) {
+
+    public Deck(String id, String name, List<Post> posts) {
         super(id, name);
-        mCards = cards;
+        mPosts = posts;
     }
 
-    public boolean addCard(Card card) {
-        return mCards.add(card);
+    public boolean addCard(Post post) {
+        return mPosts.add(post);
     }
 
+    public List<Post> getPosts() {
+        return mPosts;
+    }
 }
