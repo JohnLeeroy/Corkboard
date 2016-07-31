@@ -2,19 +2,23 @@ package com.jli.corkboard.model;
 
 import android.os.Parcel;
 
+import com.jli.corkboard.core.model.IBoard;
+import com.jli.corkboard.core.model.IDeck;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by john on 6/5/16.
  */
-public class Board extends BaseObject {
+public class Board extends BaseObject implements IBoard {
 
-    List<Deck> mDecks = new ArrayList<>();
+    List<IDeck> mDecks = new ArrayList<>();
 
     public Board(String id, String name) {
         super(id, name);
     }
+    public Board(String id, Board board) { super(id, board.getName()); }
 
     protected Board(Parcel in) {
         super(in);
@@ -42,7 +46,8 @@ public class Board extends BaseObject {
         super.writeToParcel(dest, flags);
     }
 
-    public void addDeck(Deck collection) {
+    @Override
+    public void addDeck(IDeck collection) {
         mDecks.add(collection);
     }
 
@@ -50,7 +55,7 @@ public class Board extends BaseObject {
         //
     }
 
-    public List<Deck> getDecks() {
+    public List<IDeck> getDecks() {
         return mDecks;
     }
 }

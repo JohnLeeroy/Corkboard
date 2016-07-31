@@ -15,16 +15,18 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.jli.corkboard.EventConstant;
-import com.jli.corkboard.model.provider.FirebaseDataProvider;
-import com.jli.corkboard.model.provider.UserFBProvider;
+import com.jli.corkboard.core.model.IBoard;
+import com.jli.corkboard.core.model.IBoardGroup;
+import com.jli.corkboard.core.model.IUser;
+import com.jli.corkboard.model.BoardGroup;
+import com.jli.corkboard.model.provider.firebase.FBBoardGroupProvider;
+import com.jli.corkboard.model.provider.firebase.FirebaseDataProvider;
+import com.jli.corkboard.model.provider.firebase.FBUserProvider;
 import com.jli.corkboard.view.InstantAutoCompleteTextView;
 import com.jli.corkboard.R;
 import com.jli.corkboard.fragment.ClusterListFragment;
 import com.jli.corkboard.model.Board;
-import com.jli.corkboard.model.Cluster;
 import com.jli.corkboard.model.User;
 
 import java.util.ArrayList;
@@ -32,10 +34,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+    private static boolean isFirebasePersistant = false;
 
-    User mCurrentUser;
+    IUser mCurrentUser;
     ClusterListFragment mClusterListFragment;
-    private DatabaseReference mDatabase;
     FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
@@ -47,14 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         mClusterListFragment = (ClusterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_cluster_layout);
         mCurrentUser = createDefaultUser();
-        Cluster groceryCluster = mCurrentUser.getCluster("Grocery List");
-        Cluster todoCluster = mCurrentUser.getCluster("Books");
-        Cluster vacaCluster = mCurrentUser.getCluster("Vacation Research");
-        List<Cluster> clusterList = new ArrayList<>();
-        clusterList.add(groceryCluster);
-        clusterList.add(todoCluster);
-        clusterList.add(vacaCluster);
-        mClusterListFragment.setClusters(clusterList);
+        mClusterListFragment.setBoardGroups(mCurrentUser.getBoardGroups());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -66,34 +61,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        if (!isFirebasePersistant) {
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            isFirebasePersistant = true;
+//        }
+//
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        testFirebaseDatabase();
-
-    }
-
-    User createDefaultUser() {
-        User defaultUser = new User(UUID.randomUUID().toString(), "John");
-        Cluster mGroceryList = new Cluster(UUID.randomUUID().toString(), "Grocery List");
-        mGroceryList.addBoard(new Board(UUID.randomUUID().toString(), "Publix"));
-        mGroceryList.addBoard(new Board(UUID.randomUUID().toString(), "Sams Club"));
-        mGroceryList.addBoard(new Board(UUID.randomUUID().toString(), "Etc"));
-        Cluster mTodo = new Cluster(UUID.randomUUID().toString(), "Books");
-        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "Atlas Shrugged"));
-        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "1984"));
-        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "Les Miserables"));
-        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "Astonishing X-Men Series"));
-        Cluster mVacationSpots = new Cluster(UUID.randomUUID().toString(), "Vacation Research");
-        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Montreal - Canada"));
-        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Barcelona - Spain"));
-        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Paris - Spain"));
-        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Amsterdam - Germany"));
-        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "NOLA - Louisiana"));
-
-        defaultUser.addCluster(mGroceryList);
-        defaultUser.addCluster(mTodo);
-        defaultUser.addCluster(mVacationSpots);
-        return defaultUser;
+//        testFirebaseDatabase();
+        mCurrentUser = createDefaultUser();
     }
 
     @Override
@@ -119,20 +94,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void testFirebaseDatabase() {
-        UserFBProvider userManager = new UserFBProvider();
-        userManager.getUser("0", new FirebaseDataProvider.ObjectChangeListener<User>() {
+        FBUserProvider userManager = new FBUserProvider();
+        userManager.getUser("example_user_0", new FirebaseDataProvider.ObjectChangeListener<User>() {
             @Override
             public void onObjectChange(User user) {
                 mCurrentUser = user;
+                FBBoardGroupProvider provider = new FBBoardGroupProvider();
+                provider.getBoardGroupsForUser(mCurrentUser.getId(), new FirebaseDataProvider.ObjectChangeListener<BoardGroup[]>() {
+                    @Override
+                    public void onObjectChange(BoardGroup[] boardGroup) {
+                        for(BoardGroup group : boardGroup) {
+                            mCurrentUser.addBoardGroup(group);
+                        }
+                        mClusterListFragment.setBoardGroups(mCurrentUser.getBoardGroups());
+                    }
+                });
             }
-        });
+        }, false);
     }
-
-    void getClusters() {
-
-    }
-
-
 
     public void showAddBoardDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -170,24 +149,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void addNewBoard(String name, String clusterName) {
-        Board board = new Board(UUID.randomUUID().toString(), name);
-        Cluster cluster = mCurrentUser.getCluster(clusterName);
-        if(cluster == null) {
-            cluster = new Cluster(UUID.randomUUID().toString(), clusterName);
-            mCurrentUser.addCluster(cluster);
+        IBoard board = new Board(UUID.randomUUID().toString(), name);
+        IBoardGroup boardGroup = mCurrentUser.getCluster(clusterName);
+        if (boardGroup == null) {
+            boardGroup = new BoardGroup(UUID.randomUUID().toString(), clusterName);
+            mCurrentUser.addBoardGroup(boardGroup);
+            mClusterListFragment.setBoardGroups(mCurrentUser.getBoardGroups());
         }
-        cluster.addBoard(board);
-        mClusterListFragment.setClusters(mCurrentUser.getClusters());
+        boardGroup.addBoard(board);
+        mClusterListFragment.setBoardGroups(mCurrentUser.getBoardGroups());
         mFirebaseAnalytics.logEvent(EventConstant.CLUSTER_CREATED_EVENT, null);
     }
 
-    List<String> getClusterNames(User user) {
-        List<Cluster> clusters = user.getClusters();
+    List<String> getClusterNames(IUser user) {
+        List<IBoardGroup> boardGroups = user.getBoardGroups();
         List<String> names = new ArrayList<>();
-        for(Cluster cluster : clusters) {
-            names.add(cluster.getName());
+        for (IBoardGroup boardGroup : boardGroups) {
+            names.add(boardGroup.getName());
         }
         return names;
+    }
+
+    IUser createDefaultUser() {
+        User defaultUser = new User(UUID.randomUUID().toString(), "John");
+        BoardGroup mGroceryList = new BoardGroup(UUID.randomUUID().toString(), "Grocery List");
+        mGroceryList.addBoard(new Board(UUID.randomUUID().toString(), "Publix"));
+        mGroceryList.addBoard(new Board(UUID.randomUUID().toString(), "Sams Club"));
+        mGroceryList.addBoard(new Board(UUID.randomUUID().toString(), "Etc"));
+        BoardGroup mTodo = new BoardGroup(UUID.randomUUID().toString(), "Books");
+        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "Atlas Shrugged"));
+        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "1984"));
+        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "Les Miserables"));
+        mTodo.addBoard(new Board(UUID.randomUUID().toString(), "Astonishing X-Men Series"));
+        BoardGroup mVacationSpots = new BoardGroup(UUID.randomUUID().toString(), "Vacation Research");
+        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Barcelona - Spain"));
+        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Paris - Spain"));
+        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "Amsterdam - Germany"));
+        mVacationSpots.addBoard(new Board(UUID.randomUUID().toString(), "NOLA - Louisiana"));
+
+        defaultUser.addBoardGroup(mGroceryList);
+        defaultUser.addBoardGroup(mTodo);
+        defaultUser.addBoardGroup(mVacationSpots);
+        return defaultUser;
     }
 
 }

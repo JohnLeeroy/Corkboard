@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.jli.corkboard.core.model.IDeck;
 import com.jli.corkboard.fragment.DeckFragment;
 import com.jli.corkboard.model.Deck;
 
@@ -16,11 +17,11 @@ import java.util.List;
  */
 public class DeckViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    List<Deck> mDeck;
+    List<IDeck> mDeck;
 
-    public DeckViewPagerAdapter(FragmentManager fm, List<Deck> decks) {
+    public DeckViewPagerAdapter(FragmentManager fm, List<IDeck> decks) {
         super(fm);
-        mDeck = ((decks == null) ? new ArrayList<Deck>() : decks);
+        mDeck = ((decks == null) ? new ArrayList<IDeck>() : decks);
     }
 
     @Override

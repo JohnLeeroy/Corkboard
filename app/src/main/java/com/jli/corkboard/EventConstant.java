@@ -5,5 +5,5 @@ package com.jli.corkboard;
  */
 public interface EventConstant {
     String DECK_CREATED_EVENT = "Deck Created";
-    String CLUSTER_CREATED_EVENT = "Cluster Created";
+    String CLUSTER_CREATED_EVENT = "BoardGroup Created";
 }

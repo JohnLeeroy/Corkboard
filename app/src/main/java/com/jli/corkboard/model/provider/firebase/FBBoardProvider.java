@@ -1,4 +1,4 @@
-package com.jli.corkboard.model.provider;
+package com.jli.corkboard.model.provider.firebase;
 
 import android.util.Log;
 
@@ -7,34 +7,33 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.jli.corkboard.model.Cluster;
-import com.jli.corkboard.model.User;
+import com.jli.corkboard.model.Board;
 
 /**
  * Created by john on 6/19/16.
  */
-public class ClusterFBProvider extends FirebaseDataProvider<Cluster> {
+public class FBBoardProvider extends FirebaseDataProvider<Board> {
 
-    public ClusterFBProvider() {
+    public FBBoardProvider() {
         super();
     }
 
     @Override
-    protected Cluster getObjectFromSnapshot(DataSnapshot dataSnapshot) {
+    protected Board getObjectFromSnapshot(DataSnapshot dataSnapshot) {
         Gson gson = new Gson();
         String json = dataSnapshot.getValue().toString();
         String id = dataSnapshot.getKey();
-        Cluster cluster = new Cluster(id, gson.fromJson(json, Cluster.class));
-        return cluster;
+        Board board = new Board(id, gson.fromJson(json, Board.class));
+        return board;
     }
 
-    public void getCluster(final String clusterId, final ObjectChangeListener<Cluster> listener) {
-        final DatabaseReference dataRef = mDatabase.getReference("cluster/" + clusterId);
+    public void getBoard(final String boardId, final ObjectChangeListener<Board> listener, boolean isRecursive) {
+        final DatabaseReference dataRef = mDatabase.getReference("board/" + boardId);
         final ValueEventListener dataEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Cluster cluster = getObjectFromSnapshot(dataSnapshot);
-                listener.onObjectChange(cluster);
+                Board board = getObjectFromSnapshot(dataSnapshot);
+                listener.onObjectChange(board);
                 dataRef.removeEventListener(this);
             }
 
@@ -47,5 +46,4 @@ public class ClusterFBProvider extends FirebaseDataProvider<Cluster> {
         };
         dataRef.addValueEventListener(dataEventListener);
     }
-
 }

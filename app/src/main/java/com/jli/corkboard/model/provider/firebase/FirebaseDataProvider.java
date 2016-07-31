@@ -1,4 +1,4 @@
-package com.jli.corkboard.model.provider;
+package com.jli.corkboard.model.provider.firebase;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;

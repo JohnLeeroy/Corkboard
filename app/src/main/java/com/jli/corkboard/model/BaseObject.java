@@ -5,11 +5,12 @@ import android.os.Parcelable;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.jli.corkboard.core.model.IBaseObject;
 
 /**
  * Created by john on 6/5/16.
  */
-public class BaseObject implements Parcelable {
+public class BaseObject implements IBaseObject, Parcelable {
 
     @SerializedName("id")
     protected String mId;

@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jli.corkboard.R;
+import com.jli.corkboard.core.model.IBoard;
+import com.jli.corkboard.core.model.IBoardGroup;
 import com.jli.corkboard.model.Board;
-import com.jli.corkboard.model.Cluster;
+import com.jli.corkboard.model.BoardGroup;
 
 import org.zakariya.stickyheaders.SectioningAdapter;
 
@@ -25,12 +27,12 @@ public class ClusterListAdapter extends SectioningAdapter {
     private class Section {
         int index;
         String header;
-        Cluster cluster;
+        IBoardGroup boardGroup;
     }
 
     ArrayList<Section> sections = new ArrayList<>();
 
-    public ClusterListAdapter(List<Cluster> data, IClickListener clickListener) {
+    public ClusterListAdapter(List<IBoardGroup> data, IClickListener clickListener) {
         for (int i = 0; i < data.size(); i++) {
             appendSection(data.get(i).getName(), i, data.get(i));
         }
@@ -71,7 +73,7 @@ public class ClusterListAdapter extends SectioningAdapter {
         public void onClick(View v) {
             int sectionIndex = getSection();
             int index = getPositionInSection();
-            Board board = sections.get(sectionIndex).cluster.getBoards().get(index);
+            IBoard board = sections.get(sectionIndex).boardGroup.getBoards().get(index);
             mClickListener.onClick(this, board);
         }
     }
@@ -80,7 +82,7 @@ public class ClusterListAdapter extends SectioningAdapter {
     public void onBindItemViewHolder(SectioningAdapter.ItemViewHolder viewHolder, int sectionIndex, int itemIndex) {
         Section s = sections.get(sectionIndex);
         ClusterListItemViewHolder ivh = (ClusterListItemViewHolder) viewHolder;
-        ivh.setTitle(s.cluster.getBoards().get(itemIndex).getName());
+        ivh.setTitle(s.boardGroup.getBoards().get(itemIndex).getName());
     }
 
     @Override
@@ -106,11 +108,11 @@ public class ClusterListAdapter extends SectioningAdapter {
     }
 
 
-    void appendSection(String header, int index, Cluster cluster) {
+    void appendSection(String header, int index, IBoardGroup boardGroup) {
         Section section = new Section();
         section.index = index;
         section.header = header;
-        section.cluster = cluster;
+        section.boardGroup = boardGroup;
         sections.add(section);
     }
 
@@ -121,12 +123,12 @@ public class ClusterListAdapter extends SectioningAdapter {
 
     void onAppendItem(int sectionIndex, Board board) {
         Section s = sections.get(sectionIndex);
-        s.cluster.getBoards().add(board);
-        notifySectionItemInserted(sectionIndex, s.cluster.getBoards().size()-1);
+        s.boardGroup.getBoards().add(board);
+        notifySectionItemInserted(sectionIndex, s.boardGroup.getBoards().size()-1);
     }
     void onDeleteItem(int sectionIndex, int itemIndex) {
         Section s = sections.get(sectionIndex);
-        s.cluster.getBoards().remove(itemIndex);
+        s.boardGroup.getBoards().remove(itemIndex);
         notifySectionItemRemoved(sectionIndex, itemIndex);
     }
 
@@ -137,7 +139,7 @@ public class ClusterListAdapter extends SectioningAdapter {
 
     @Override
     public int getNumberOfItemsInSection(int sectionIndex) {
-        return sections.get(sectionIndex).cluster.getBoards().size();
+        return sections.get(sectionIndex).boardGroup.getBoards().size();
     }
 
     @Override
@@ -145,21 +147,21 @@ public class ClusterListAdapter extends SectioningAdapter {
         return !TextUtils.isEmpty(sections.get(sectionIndex).header);
     }
 
-    public void setData(List<Cluster> modules) {
-        for(Cluster cluster : modules) {
-            Section section = findClusterInSections(cluster);
+    public void setData(List<IBoardGroup> modules) {
+        for(IBoardGroup boardGroup : modules) {
+            Section section = findClusterInSections(boardGroup);
             if(section != null) {
-                section.cluster = cluster;
+                section.boardGroup = boardGroup;
             } else {
-                appendSection(cluster.getName(), 0, cluster);
+                appendSection(boardGroup.getName(), 0, boardGroup);
             }
         }
         notifyAllSectionsDataSetChanged();
     }
 
-    Section findClusterInSections(Cluster cluster) {
+    Section findClusterInSections(IBoardGroup boardGroup) {
         for(Section c : sections) {
-            if(c.cluster.getId().equals(cluster.getId())) {
+            if(c.boardGroup.getId().equals(boardGroup.getId())) {
                 return c;
             }
         }
@@ -167,6 +169,6 @@ public class ClusterListAdapter extends SectioningAdapter {
     }
 
     public interface IClickListener {
-        void onClick(ClusterListItemViewHolder viewHolder, Board board);
+        void onClick(ClusterListItemViewHolder viewHolder, IBoard board);
     }
 }

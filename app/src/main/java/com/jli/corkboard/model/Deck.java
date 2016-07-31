@@ -1,5 +1,7 @@
 package com.jli.corkboard.model;
 
+import com.jli.corkboard.core.model.IDeck;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.Set;
 /**
  * Created by john on 6/5/16.
  */
-public class Deck extends BaseObject {
+public class Deck extends BaseObject implements IDeck{
 
     List<Post> mPosts = new ArrayList<>();
 
