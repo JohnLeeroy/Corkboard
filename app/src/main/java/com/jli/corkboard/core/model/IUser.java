@@ -1,8 +1,5 @@
 package com.jli.corkboard.core.model;
 
-import com.jli.corkboard.model.BoardGroup;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**

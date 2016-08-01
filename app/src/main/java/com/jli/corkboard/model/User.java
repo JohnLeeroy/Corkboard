@@ -18,7 +18,6 @@ public class User implements IUser {
 
     Map<String, IBoardGroup> mClusterMap = new HashMap<>();
 
-    public User() { }
     public User(String id, String name) {
         this.id = id;
         this.name = name;

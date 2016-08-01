@@ -1,22 +1,19 @@
 package com.jli.corkboard.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.jli.corkboard.core.model.IDeck;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by john on 6/5/16.
  */
-public class Deck extends BaseObject implements IDeck{
+public class Deck extends ObservableBaseObject implements IDeck {
 
     List<Post> mPosts = new ArrayList<>();
-
-    public Deck(String id, String name) {
-        super(id, name);
-    }
 
     public Deck(String id, String name, List<Post> posts) {
         super(id, name);
@@ -24,7 +21,12 @@ public class Deck extends BaseObject implements IDeck{
     }
 
     public boolean addCard(Post post) {
-        return mPosts.add(post);
+        boolean result = mPosts.add(post);
+        if (result) {
+            setChanged();
+            notifyObservers();
+        }
+        return result;
     }
 
     public List<Post> getPosts() {

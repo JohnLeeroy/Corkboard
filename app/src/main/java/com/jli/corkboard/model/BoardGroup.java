@@ -12,22 +12,9 @@ import java.util.List;
 /**
  * Created by john on 6/5/16.
  */
-public class BoardGroup implements IBoardGroup, Parcelable {
-
-    private String name;
-
-    private String id;
+public class BoardGroup extends ObservableBaseObject implements IBoardGroup {
 
     List<IBoard> mBoards = new ArrayList<>();
-
-    public BoardGroup() { }
-    public BoardGroup(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-    public BoardGroup(String id, BoardGroup boardGroup) {
-        this(id, boardGroup.getName());
-    }
 
     @Override
     public void addBoard(IBoard board) {
@@ -36,21 +23,4 @@ public class BoardGroup implements IBoardGroup, Parcelable {
 
     public List<IBoard> getBoards() { return mBoards; }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
 }
