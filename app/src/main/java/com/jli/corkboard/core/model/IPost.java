@@ -1,4 +1,6 @@
 package com.jli.corkboard.core.model;
 
-public interface IPost extends IBaseObject {
+import android.os.Parcelable;
+
+public interface IPost extends IBaseObject, Parcelable {
 }

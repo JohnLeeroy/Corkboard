@@ -73,7 +73,7 @@ public class ClusterListAdapter extends SectioningAdapter {
         public void onClick(View v) {
             int sectionIndex = getSection();
             int index = getPositionInSection();
-            IBoard board = sections.get(sectionIndex).boardGroup.getBoards().get(index);
+            IBoard board = (IBoard) sections.get(sectionIndex).boardGroup.getBoards().get(index);
             mClickListener.onClick(this, board);
         }
     }
@@ -82,7 +82,8 @@ public class ClusterListAdapter extends SectioningAdapter {
     public void onBindItemViewHolder(SectioningAdapter.ItemViewHolder viewHolder, int sectionIndex, int itemIndex) {
         Section s = sections.get(sectionIndex);
         ClusterListItemViewHolder ivh = (ClusterListItemViewHolder) viewHolder;
-        ivh.setTitle(s.boardGroup.getBoards().get(itemIndex).getName());
+        IBoard board = (IBoard) s.boardGroup.getBoards().get(itemIndex);
+        ivh.setTitle(board.getName());
     }
 
     @Override

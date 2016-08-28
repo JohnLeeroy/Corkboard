@@ -1,5 +1,8 @@
 package com.jli.corkboard.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.jli.corkboard.core.model.IBoardGroup;
 import com.jli.corkboard.core.model.IUser;
 
@@ -45,5 +48,20 @@ public class User implements IUser {
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

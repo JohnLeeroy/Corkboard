@@ -9,11 +9,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BoardGroupRepository implements Repository<IBoardGroup> {
+public class BoardGroupRepository extends BaseRepository implements Repository<IBoardGroup> {
 
     //TODO Use a database or something for persistence
 
-    private Map<String, IBoardGroup> mData = new HashMap<>();
+    private static Map<String, IBoardGroup> mData = new HashMap<>();
+
+//    public BoardGroupRepository(IDataIO dataIO) {
+//        mDataIO = dataIO;
+//    }
 
     @Override
     public void add(IBoardGroup obj) {

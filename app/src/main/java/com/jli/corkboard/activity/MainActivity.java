@@ -20,9 +20,6 @@ import com.jli.corkboard.core.model.IBoard;
 import com.jli.corkboard.core.model.IBoardGroup;
 import com.jli.corkboard.core.model.IUser;
 import com.jli.corkboard.model.BoardGroup;
-import com.jli.corkboard.model.provider.firebase.FBBoardGroupProvider;
-import com.jli.corkboard.model.provider.firebase.FirebaseDataProvider;
-import com.jli.corkboard.model.provider.firebase.FBUserProvider;
 import com.jli.corkboard.view.InstantAutoCompleteTextView;
 import com.jli.corkboard.R;
 import com.jli.corkboard.fragment.ClusterListFragment;
@@ -33,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import rx.Observable;
+import rx.Observer;
+
 public class MainActivity extends AppCompatActivity {
     private static boolean isFirebasePersistant = false;
 
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     ClusterListFragment mClusterListFragment;
     FirebaseAnalytics mFirebaseAnalytics;
 
+    Board testBoard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,16 +62,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        if (!isFirebasePersistant) {
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            isFirebasePersistant = true;
-//        }
-//
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-//        testFirebaseDatabase();
         mCurrentUser = createDefaultUser();
-    }
 
+        testBoard = new Board("2134u983q257043", "Default Name");
+
+        Observable<Board> boardObservable = Observable.just(testBoard);
+        boardObservable.subscribe(new Observer<Board>() {
+            @Override
+            public void onCompleted() {
+                System.out.println(testBoard.getName());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Board b) {
+                System.out.println(b.getName());
+
+            }
+        });
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -91,26 +106,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    void testFirebaseDatabase() {
-        FBUserProvider userManager = new FBUserProvider();
-        userManager.getUser("example_user_0", new FirebaseDataProvider.ObjectChangeListener<User>() {
-            @Override
-            public void onObjectChange(User user) {
-                mCurrentUser = user;
-                FBBoardGroupProvider provider = new FBBoardGroupProvider();
-                provider.getBoardGroupsForUser(mCurrentUser.getId(), new FirebaseDataProvider.ObjectChangeListener<BoardGroup[]>() {
-                    @Override
-                    public void onObjectChange(BoardGroup[] boardGroup) {
-                        for(BoardGroup group : boardGroup) {
-                            mCurrentUser.addBoardGroup(group);
-                        }
-                        mClusterListFragment.setBoardGroups(mCurrentUser.getBoardGroups());
-                    }
-                });
-            }
-        }, false);
     }
 
     public void showAddBoardDialog() {
@@ -192,5 +187,4 @@ public class MainActivity extends AppCompatActivity {
         defaultUser.addBoardGroup(mVacationSpots);
         return defaultUser;
     }
-
 }

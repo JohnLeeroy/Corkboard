@@ -20,11 +20,43 @@ public class Deck extends ObservableBaseObject implements IDeck {
         mPosts = posts;
     }
 
+    public Deck(String id, String name) {
+        super(id, name);
+    }
+
+    protected Deck(Parcel in) {
+        super(in);
+        mPosts = in.createTypedArrayList(Post.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(mPosts);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Deck> CREATOR = new Creator<Deck>() {
+        @Override
+        public Deck createFromParcel(Parcel in) {
+            return new Deck(in);
+        }
+
+        @Override
+        public Deck[] newArray(int size) {
+            return new Deck[size];
+        }
+    };
+
     public boolean addCard(Post post) {
         boolean result = mPosts.add(post);
         if (result) {
-            setChanged();
-            notifyObservers();
+//            setChanged();
+//            notifyObservers();
         }
         return result;
     }
